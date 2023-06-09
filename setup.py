@@ -103,7 +103,7 @@ daisy_likwid_helpers = Extension(
 
 setup(
     name="daisytuner-likwid",
-    version="0.0.1",
+    version="0.0.2",
     author="Lukas Truemper",
     author_email="lukas.truemper@outlook.de",
     description="Likwid functions used by the daisytuner",
