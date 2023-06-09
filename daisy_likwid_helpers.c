@@ -20,15 +20,6 @@ static int numa_initialized = 0;
 NumaTopology_t numainfo = NULL;
 
 static PyObject *
-likwid_lversion(PyObject *self, PyObject *args)
-{
-    int v = LIKWID_MAJOR;
-    int r = LIKWID_RELEASE;
-    int m = LIKWID_MINOR;
-    return Py_BuildValue("iii", v, r, m);
-}
-
-static PyObject *
 likwid_inittopology(PyObject *self, PyObject *args)
 {
     int ret = topology_init();
@@ -329,7 +320,6 @@ likwid_getgputopology(PyObject *self, PyObject *args)
 #endif
 
 static PyMethodDef LikwidMethods[] = {
-    {"likwidversion", likwid_lversion, METH_VARARGS, "Get the likwid version numbers."},
     /* topology functions */
     {"inittopology", likwid_inittopology, METH_VARARGS, "Initialize the topology module."},
     {"finalizetopology", likwid_finalizetopology, METH_VARARGS, "Finalize the topology module."},

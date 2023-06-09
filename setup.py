@@ -98,22 +98,17 @@ daisy_likwid_helpers = Extension(
     include_dirs=[LIKWID_INCPATH],
     libraries=[LIKWID_LIB],
     library_dirs=[LIKWID_LIBPATH],
-    define_macros=[
-        ("LIKWID_MAJOR", "5"),
-        ("LIKWID_MINOR", "2"),
-        ("LIKWID_RELEASE", "2"),
-    ],
     sources=["daisy_likwid_helpers.c"],
 )
 
 setup(
     name="daisytuner-likwid",
-    version="5.2.2",
+    version="0.0.1",
     author="Lukas Truemper",
     author_email="lukas.truemper@outlook.de",
     description="Likwid functions used by the daisytuner",
     long_description="Likwid functions used by the daisytuner",
-    url="https://daisytuner.com/",
+    url="https://github.com/daisytuner/daisytuner-likwid",
     classifiers=[
         "Topic :: Utilities",
     ],
