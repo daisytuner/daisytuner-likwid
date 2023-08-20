@@ -213,7 +213,7 @@ likwid_printsupportedcpus(PyObject *self, PyObject *args)
 }
 
 
-#if (LIKWID_NVMON)
+#if LIKWID_NVMON
 static int gpuTopology_initialized = 0;
 static GpuTopology_t gputopo = NULL;
 static int nvmon_initialized = 1;
@@ -327,7 +327,7 @@ static PyMethodDef LikwidMethods[] = {
     {"getcpuinfo", likwid_getcpuinfo, METH_VARARGS, "Get the system information for the current system."},
     {"printsupportedcpus", likwid_printsupportedcpus, METH_VARARGS, "Print all CPU variants supported by current version of LIKWID."},
     /* GPU functions */
-#ifdef LIKWID_NVMON
+#if LIKWID_NVMON
     {"initgputopology", likwid_initgputopology, METH_VARARGS, "Initialize the topology module for NVIDIA GPUs."},
     {"finalizegputopology", likwid_finalizegputopology, METH_VARARGS, "Finalize the topology module for NVIDIA GPUs."},
     {"getgputopology", likwid_getgputopology, METH_VARARGS, "Get the topology information for the current system for NVIDIA GPUs."},

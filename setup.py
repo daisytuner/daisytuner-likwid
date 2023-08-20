@@ -79,27 +79,38 @@ def get_hierarchy():
         raise Exception("Error the likwid library directory was not found")
     if include_path is None or not os.path.exists(include_path):
         raise Exception("Error the likwid include directory was not found")
+
+    import lief
+    library_so = lief.parse(library)
+    
+    LIKWID_NVMON = '0'
+    for func in library_so.exported_functions:
+        if func.name == "topology_gpu_init":
+            LIKWID_NVMON = '1'
+            break
+
     m = re.match("lib(.*)\.so", os.path.basename(library))
     if m:
         library = m.group(1)
-    return prefix_path, library_path, library, include_path
 
+    return prefix_path, library_path, library, include_path, ("LIKWID_NVMON", LIKWID_NVMON)
 
-try:
-    LIKWID_PREFIX, LIKWID_LIBPATH, LIKWID_LIB, LIKWID_INCPATH = get_hierarchy()
-    print(LIKWID_PREFIX, LIKWID_LIBPATH, LIKWID_LIB, LIKWID_INCPATH)
-except Exception as e:
-    print(e)
-    sys.exit(1)
+def define_module():
+    try:
+        LIKWID_PREFIX, LIKWID_LIBPATH, LIKWID_LIB, LIKWID_INCPATH, LIKWID_NVMON = get_hierarchy()
+    except Exception as e:
+        print(e)
+        sys.exit(1)
 
-
-daisy_likwid_helpers = Extension(
-    "daisy_likwid_helpers",
-    include_dirs=[LIKWID_INCPATH],
-    libraries=[LIKWID_LIB],
-    library_dirs=[LIKWID_LIBPATH],
-    sources=["daisy_likwid_helpers.c"],
-)
+    daisy_likwid_helpers = Extension(
+        "daisy_likwid_helpers",
+        include_dirs=[LIKWID_INCPATH],
+        libraries=[LIKWID_LIB],
+        library_dirs=[LIKWID_LIBPATH],
+        sources=["daisy_likwid_helpers.c"],
+        define_macros=[LIKWID_NVMON]
+    )
+    return daisy_likwid_helpers
 
 setup(
     name="daisytuner-likwid",
@@ -114,5 +125,5 @@ setup(
     ],
     python_requires=">=3.6",
     package_data={"daisytuner-likwid": ["daisy_likwid_helpers.c", "LICENSE"]},
-    ext_modules=[daisy_likwid_helpers],
+    ext_modules=[define_module()],
 )
