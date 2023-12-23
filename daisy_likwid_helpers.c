@@ -215,7 +215,7 @@ likwid_printsupportedcpus(PyObject *self, PyObject *args)
 
 #if LIKWID_NVMON
 static int gpuTopology_initialized = 0;
-static GpuTopology_t gputopo = NULL;
+static CudaTopology_t gputopo = NULL;
 static int nvmon_initialized = 1;
 
 static PyObject *
@@ -224,7 +224,7 @@ likwid_initgputopology(PyObject *self, PyObject *args)
     int ret = 0;
     if (!gpuTopology_initialized)
     {
-        ret = topology_gpu_init();
+        ret = topology_cuda_init();
         if (ret == EXIT_SUCCESS)
         {
             gpuTopology_initialized = 1;
@@ -238,7 +238,7 @@ likwid_finalizegputopology(PyObject *self, PyObject *args)
 {
     if (gpuTopology_initialized)
     {
-        topology_gpu_finalize();
+        topology_cuda_finalize();
     }
     Py_RETURN_NONE;
 }
@@ -250,7 +250,7 @@ likwid_getgputopology(PyObject *self, PyObject *args)
 
     if (!gpuTopology_initialized)
     {
-        ret = topology_gpu_init();
+        ret = topology_cuda_init();
         if (ret == EXIT_SUCCESS)
         {
             gpuTopology_initialized = 1;
@@ -260,13 +260,13 @@ likwid_getgputopology(PyObject *self, PyObject *args)
             Py_RETURN_NONE;
         }
     }
-    gputopo = get_gpuTopology();
+    gputopo = get_cudaTopology();
     if (gputopo)
     {
         PyObject *l = PyList_New(gputopo->numDevices);
         for(i = 0; i < gputopo->numDevices; i++)
         {
-            GpuDevice* dev = &gputopo->devices[i];
+            CudaDevice* dev = &gputopo->devices[i];
             PyObject *d = PyDict_New();
 
             PyDict_SetItem(d, PYSTR("devid"), PYUINT(dev->devid));

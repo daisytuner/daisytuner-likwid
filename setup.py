@@ -81,23 +81,37 @@ def get_hierarchy():
         raise Exception("Error the likwid include directory was not found")
 
     import lief
+
     library_so = lief.parse(library)
-    
-    LIKWID_NVMON = '0'
+
+    LIKWID_NVMON = "0"
     for func in library_so.exported_functions:
-        if func.name == "topology_gpu_init":
-            LIKWID_NVMON = '1'
+        if func.name == "topology_cuda_init":
+            LIKWID_NVMON = "1"
             break
 
     m = re.match("lib(.*)\.so", os.path.basename(library))
     if m:
         library = m.group(1)
 
-    return prefix_path, library_path, library, include_path, ("LIKWID_NVMON", LIKWID_NVMON)
+    return (
+        prefix_path,
+        library_path,
+        library,
+        include_path,
+        ("LIKWID_NVMON", LIKWID_NVMON),
+    )
+
 
 def define_module():
     try:
-        LIKWID_PREFIX, LIKWID_LIBPATH, LIKWID_LIB, LIKWID_INCPATH, LIKWID_NVMON = get_hierarchy()
+        (
+            LIKWID_PREFIX,
+            LIKWID_LIBPATH,
+            LIKWID_LIB,
+            LIKWID_INCPATH,
+            LIKWID_NVMON,
+        ) = get_hierarchy()
     except Exception as e:
         print(e)
         sys.exit(1)
@@ -108,13 +122,14 @@ def define_module():
         libraries=[LIKWID_LIB],
         library_dirs=[LIKWID_LIBPATH],
         sources=["daisy_likwid_helpers.c"],
-        define_macros=[LIKWID_NVMON]
+        define_macros=[LIKWID_NVMON],
     )
     return daisy_likwid_helpers
 
+
 setup(
     name="daisytuner-likwid",
-    version="0.1.0",
+    version="0.1.1",
     author="Lukas Truemper",
     author_email="lukas.truemper@outlook.de",
     description="Likwid functions used by the daisytuner",
